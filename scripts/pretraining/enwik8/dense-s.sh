@@ -2,10 +2,10 @@ mkdir -p checkpoints/enwik8/transformers-s
 
 args="
 --data datasets/pretraining/enwik8 \
---architecture sfsfsfsf \
+--architecture sgsgsgsg \
 --nlayers 4 \
---hid-sz 384 \
---inner-hid-sz 384 \
+--hid-sz 192 \
+--inner-hid-sz 192 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
