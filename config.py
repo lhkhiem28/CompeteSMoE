@@ -82,6 +82,18 @@ PARAMS_CONFIG = {
             'help': 'arch',
             'dest': 'architecture'
         },
+        '--base_arch': {
+            'type': str,
+            'default': None,
+            'help': 'arch',
+            'dest': 'base_arch'
+        },
+        "--load_balance": {
+            "type": float,
+            "default": 0.0,
+            "help": "load_balance",
+            "dest": "load_balance",
+        },
     },
     # optimization-specific
     'optim_params': {

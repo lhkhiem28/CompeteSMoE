@@ -1,12 +1,9 @@
-r"""
-Zero gate that direct all input to gate 0
-"""
+import os, sys
 from .base_gate import BaseGate
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 class ZeroGate(BaseGate):
     r"""

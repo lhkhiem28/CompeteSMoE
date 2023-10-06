@@ -1,8 +1,5 @@
-r"""
-Base gate with standard interface
-"""
+import os, sys
 import torch.nn as nn
-
 
 class BaseGate(nn.Module):
     def __init__(self, num_expert, world_size):

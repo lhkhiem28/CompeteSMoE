@@ -1,17 +1,4 @@
-r"""
-The example topology-aware gate for two-layer tree-like topology, proposed by
-the PPoPP'22 paper, FasterMoE.  Limited number of tokens are sent across the
-upper-level slow connection, and other ones are re-directed to experts in the
-local network.
-
-The number of GPUs to form such a local network is defined by an environment
-variable `FMOE_TOPO_GPUS_PER_NODE`, and it is by default `8`.
-
-The fraction of tokens that are allowed to be sent across nodes is defined by
-an environement variable `FMOE_TOPO_OUTGOING_FRACTION`, and it is by default
-`0.14`. Users are supposed to set the proper value in their own environemnt,
-guided by some performance model, to achieve maximum throughput.
-"""
+import os, sys
 from .naive_gate import NaiveGate
 
 import os
@@ -22,13 +9,11 @@ from .utils import limit_by_capacity
 import fmoe_cuda
 from fmoe.functions import count_by_gate
 
-
 nw_per_node = 8
 try:
     nw_per_node = int(os.environ['FMOE_TOPO_GPUS_PER_NODE'])
 except Exception:
     pass
-
 
 class FasterGate(NaiveGate):
     def __init__(self, d_model, n_expert, world_size, node_rank):
@@ -107,7 +92,6 @@ class FasterGate(NaiveGate):
         topk_val = F.softmax(topk_val, dim=-1)
 
         return topk_idx, topk_val
-
 
 def gen_faster_gate(rank):
     def _gen(d_model, n_expert, world_size, top_k=2):

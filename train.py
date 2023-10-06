@@ -119,14 +119,14 @@ def launch(
     for iter_no in range(iter_init, trainer_params['nb_iter']):
         t_sta = time.time()
         loss_train, data_pos[0], hid_cache[0] = train_iteration(
-            model, optimizer, scheduler, train_data, nb_batches_per_iter,
+            model, model_params["load_balance"], optimizer, scheduler, train_data, nb_batches_per_iter,
             model_params['block_size'], False, data_pos[0], hid_cache[0],
             trainer_params['batch_split'], trainer_params['checkpoint_path']
         )
         elapsed = 1000 * (time.time() - t_sta) / nb_batches_per_iter
         with torch.no_grad():
             loss_val, data_pos[1], hid_cache[1] = train_iteration(
-                model, optimizer, scheduler, val_data, nb_batches_per_iter,
+                model, model_params["load_balance"], optimizer, scheduler, val_data, nb_batches_per_iter,
                 model_params['block_size'], True, data_pos[1], hid_cache[1],
                 trainer_params['batch_split'], trainer_params['checkpoint_path']
             )

@@ -4,7 +4,9 @@ import math, random
 import torch
 import tqdm
 
-def _train_step(model, X, Y, h_cache, eval_only, loss_div=1):
+from custom_gates import *
+
+def _train_step(model, load_balance, X, Y, h_cache, eval_only, loss_div=1):
     """Single training step."""
 
     out, h_cache = model(X, h_cache)
@@ -20,17 +22,24 @@ def _train_step(model, X, Y, h_cache, eval_only, loss_div=1):
                 for layer_i in range(model.module.attn_layer_count)
             )
 
+        if load_balance > 0:
+            balance_loss = 0
+            for name, m in model.named_modules():
+                if isinstance(m, CustomNaiveGate_Balance):
+                    balance_loss += m.loss
+            loss += load_balance * balance_loss
+
         (loss / loss_div).backward()
     return loss_value, h_cache
 
-def _train_batch(model, optimizer, scheduler, X, Y, h_cache, eval_only, batch_split):
+def _train_batch(model, load_balance, optimizer, scheduler, X, Y, h_cache, eval_only, batch_split):
     """Train on a batch."""
 
     optimizer.zero_grad()
 
     if batch_split == 1:
         # process a batch in a single step (default behaviour)
-        loss_value, h_cache = _train_step(model, X, Y, h_cache, eval_only)
+        loss_value, h_cache = _train_step(model, load_balance, X, Y, h_cache, eval_only)
     else:
         # split a batch into multiple pieces that each can fit in memory
         assert X.size(0) % batch_split == 0
@@ -41,7 +50,7 @@ def _train_batch(model, optimizer, scheduler, X, Y, h_cache, eval_only, batch_sp
             split_slice = slice(split_ind*split_size, (split_ind+1)*split_size)
             split_h_cache = [h[split_slice,:,:] for h in h_cache]
             split_loss_value, split_h_cache = _train_step(
-                model, X[split_slice,:], Y[split_slice],
+                model, load_balance, X[split_slice,:], Y[split_slice],
                 split_h_cache, eval_only, batch_split
             )
             loss_value += split_loss_value
@@ -64,7 +73,7 @@ def _train_batch(model, optimizer, scheduler, X, Y, h_cache, eval_only, batch_sp
                     layer.attn.attn.adaptive_span.clamp_param()
     return loss_value, h_cache
 
-def train_iteration(model, optimizer, scheduler, data, nb_batches_per_iter, block_size, eval_only, train_pos, h_cache, batch_split, checkpoint_path):
+def train_iteration(model, load_balance, optimizer, scheduler, data, nb_batches_per_iter, block_size, eval_only, train_pos, h_cache, batch_split, checkpoint_path):
     """Single training iteration."""
     if eval_only:
         model.eval()
@@ -88,7 +97,7 @@ def train_iteration(model, optimizer, scheduler, data, nb_batches_per_iter, bloc
         Y = data[:, train_pos + 1: train_pos + block_size + 1].contiguous()
 
         loss, h_cache = _train_batch(
-            model=model,
+            model=model, load_balance=load_balance, 
             optimizer=optimizer,
             scheduler=scheduler,
             X=X, Y=Y,

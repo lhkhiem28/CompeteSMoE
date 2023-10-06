@@ -1,25 +1,22 @@
-r"""
-Custom Gate
-"""
-from fmoe.gates.base_gate import BaseGate
-
+import os, sys
+import argparse
+import math, random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 import pdb
 import numpy as np 
+from fmoe.gates.base_gate import BaseGate
 
 __all__ = ['CustomNaiveGate', 'CustomDropGate', 'CustomRandomGate', 'CustomRandomGate_Dense',
             'CustomDTSGate', 'CustomDTSRandomGate', 'CustomDTSGate_softmax', 'CustomDTSRandomGate_softmax',
             'CustomDenseGate', 'CustomHashGate', 'CustomNaiveGate_Balance', 'CustomNaiveGate_Attn']
 
-
 class CustomNaiveGate(BaseGate):
     r"""
     Naive Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -48,13 +45,11 @@ class CustomNaiveGate(BaseGate):
         if return_all_scores:
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
-
 
 class CustomNaiveGate_Attn(BaseGate):
     r"""
     Naive Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -84,12 +79,10 @@ class CustomNaiveGate_Attn(BaseGate):
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
 
-
 class CustomNaiveGate_Balance(BaseGate):
     r"""
     Naive Gate with Balance loss
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -139,9 +132,7 @@ class CustomNaiveGate_Balance(BaseGate):
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
 
-
 class CustomHashGate(BaseGate):
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -209,14 +200,10 @@ class CustomHashGate(BaseGate):
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
 
-
-
-
 class CustomDropGate(BaseGate):
     r"""
     Dropout Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -254,7 +241,6 @@ class CustomRandomGate(BaseGate):
     r"""
     Random Assign Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -291,7 +277,6 @@ class CustomRandomGate_Dense(BaseGate):
     r"""
     Random Assign Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -324,13 +309,11 @@ class CustomRandomGate_Dense(BaseGate):
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
 
-
 # Dense to Sparse
 class CustomDTSGate(BaseGate):
     r"""
     Dense to Sparse Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -386,7 +369,6 @@ class CustomDTSRandomGate(BaseGate):
     r"""
     Dense to Sparse Gate Random Assign
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -443,7 +425,6 @@ class CustomDTSGate_softmax(BaseGate):
     r"""
     Dense to Sparse Gate
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -499,7 +480,6 @@ class CustomDTSRandomGate_softmax(BaseGate):
     r"""
     Dense to Sparse Gate Random Assign
     """
-
     def __init__(self, d_model, num_expert, world_size, top_k=2):
         super().__init__(num_expert, world_size)
         self.gate = nn.Linear(d_model, self.tot_expert)
@@ -577,11 +557,3 @@ class CustomDenseGate(BaseGate):
         if return_all_scores:
             return gate_top_k_idx, gate_score, gate
         return gate_top_k_idx, gate_score
-
-
-
-
-
-
-
-

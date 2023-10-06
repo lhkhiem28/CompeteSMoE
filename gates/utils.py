@@ -1,10 +1,7 @@
-r"""
-Utilities that may be used in the gates
-"""
+import os, sys
 import torch
 from fmoe.functions import count_by_gate
 import fmoe_cuda as fmoe_native
-
 
 def limit_by_capacity(topk_idx, num_expert, world_size, capacity):
     with torch.no_grad():

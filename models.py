@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import tqdm
 
 from custom_transformer import FMoETransformerMLP
-from custom_gate import *
+from custom_gates import *
 
 # Size notations:
 # B = batch_size, H = hidden_size, M = block_size, L = attn_span
@@ -138,7 +138,7 @@ class FeedForwardLayer(nn.Module):
         return h2
 
 class CustomizedMoEPositionwiseFF(FMoETransformerMLP):
-    def __init__(self, hidden_size, inner_hidden_size, dropout, pre_lnorm=False, moe_num_expert=16, moe_top_k=2, gate_name=CustomNaiveGate):
+    def __init__(self, hidden_size, inner_hidden_size, dropout, pre_lnorm=False, moe_num_expert=16, moe_top_k=2, gate_name=CustomNaiveGate_Balance):
         activation = nn.Sequential(
             nn.ReLU(),
             nn.Dropout(dropout)
@@ -170,12 +170,12 @@ class TransformerSeqLayer(nn.Module):
     def __init__(self, hidden_size, inner_hidden_size, dropout, s, g, **kargs):
         nn.Module.__init__(self)
         self.attn = MultiHeadSeqAttention(hidden_size=hidden_size, dropout=dropout, **kargs) if s is 's' else None
-        self.ff = CustomizedMoEPositionwiseFF(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout) if g is 'g' else None
+        self.smoe = CustomizedMoEPositionwiseFF(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout) if g is 'g' else None
         self.norm1 = nn.LayerNorm(hidden_size)
         self.norm2 = nn.LayerNorm(hidden_size)
 
         self.use_attn = s == 's'
-        self.use_ff = g == 'g'
+        self.use_smoe = g == 'g'
 
     def forward(self, h, h_cache, key_pe):
         # h = B x M x H
@@ -184,13 +184,13 @@ class TransformerSeqLayer(nn.Module):
             h_all = torch.cat([h_cache, h], dim=1) # B x (M+L) x H
             attn_out = self.attn(h, h_all, h_all, key_pe)
             h = self.norm1(h + attn_out) # B x M x H
-        if self.use_ff:
-            ff_out = self.ff(h)
-            h = self.norm2(h + ff_out) # B x M x H
+        if self.use_smoe:
+            smoe_out = self.smoe(h)
+            h = self.norm2(h + smoe_out) # B x M x H
         return h
 
 class TransformerSeq(nn.Module):
-    def __init__(self, vocab_size, hidden_size, inner_hidden_size, nb_heads, nb_layers, attn_span, architecture, dropout, **kargs):
+    def __init__(self, vocab_size, hidden_size, inner_hidden_size, nb_heads, nb_layers, attn_span, architecture, base_arch, dropout, **kargs):
         nn.Module.__init__(self)
         # token embeddings
         self.in_emb = nn.Embedding(vocab_size, hidden_size)
@@ -204,13 +204,14 @@ class TransformerSeq(nn.Module):
         print(arch)
         self.attn_layer_count = arch.count('s')
         self.layers = nn.ModuleList()
-        self.layers.extend(
-            TransformerSeqLayer(
-                hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, s= arch[2*i], g=arch[2*i+1], nb_heads=nb_heads, dropout=dropout, 
-                attn_span=attn_span, **kargs
+        if base_arch == "transformer":
+            self.layers.extend(
+                TransformerSeqLayer(
+                    hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, s= arch[2*i], g=arch[2*i+1], nb_heads=nb_heads, dropout=dropout, 
+                    attn_span=attn_span, **kargs
+                )
+                for i in range(nb_layers)
             )
-            for i in range(nb_layers)
-        )
 
     def forward(self, x, h_cache):
         # x size = B x M

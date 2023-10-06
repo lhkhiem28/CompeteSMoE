@@ -1,18 +1,16 @@
-r"""
-Adaption to act as the MLP layer using an MoE MLP layer in transformer.
-"""
+import os, sys
+import argparse
+import math, random
 import torch
 import torch.nn as nn
 from custom_layers import FMoE
-from custom_linear import FMoELinear
-
+from custom_layers import FMoELinear
 
 class _Expert(nn.Module):
     r"""
     An expert using 2 FMoELinear modules to speed up the computation of experts
     within one worker.
     """
-
     def __init__(self, num_expert, d_model, d_hidden, activation, rank=0):
         super().__init__()
         self.htoh4 = FMoELinear(num_expert, d_model, d_hidden, bias=True, rank=rank)
@@ -29,14 +27,12 @@ class _Expert(nn.Module):
         x = self.h4toh(x, fwd_expert_count)
         return x
 
-
 class FMoETransformerMLP(FMoE):
     r"""
     A complete MoE MLP module in a Transformer block.
     * `activation` is the activation function to be used in MLP in each expert.
     * `d_hidden` is the dimension of the MLP layer.
     """
-
     def __init__(
         self,
         num_expert=32,

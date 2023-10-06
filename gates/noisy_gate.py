@@ -1,6 +1,4 @@
-r"""
-Noisy gate for gshard and switch
-"""
+import os, sys
 from .base_gate import BaseGate
 
 import torch
@@ -8,7 +6,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions.normal import Normal
 import math
-
 
 class NoisyGate(BaseGate):
     def __init__(self, d_model, num_expert, world_size, top_k=2):
@@ -33,7 +30,6 @@ class NoisyGate(BaseGate):
 
         torch.nn.init.kaiming_uniform_(self.w_gate, a=math.sqrt(5))
         torch.nn.init.kaiming_uniform_(self.w_noise, a=math.sqrt(5))
-
 
     def _gates_to_load(self, gates):
         """Compute the true load per expert, given the gates.
