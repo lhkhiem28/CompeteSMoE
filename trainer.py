@@ -146,7 +146,7 @@ def full_eval(model, optimizer, scheduler, data, block_size, hidden_size):
         Y = data[:, train_pos + 1: train_pos + block_size + 1].contiguous()
 
         loss, h_cache = _train_batch(
-            model=model,
+            model=model, load_balance=0,
             optimizer=optimizer,
             scheduler=scheduler,
             X=X, Y=Y,
