@@ -5,8 +5,8 @@ args="
 --base_arch transformer \
 --architecture sgsgsgsg \
 --nlayers 4 \
---hid-sz 192 \
---inner-hid-sz 192 \
+--hid-sz 224 \
+--inner-hid-sz 224 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
