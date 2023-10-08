@@ -189,48 +189,6 @@ class TransformerSeqLayer(nn.Module):
             h = self.norm2(h + smoe_out) # B x M x H
         return h
 
-class BrainformerSeqLayer(nn.Module):
-    def __init__(self, hidden_size, inner_hidden_size, dropout, arch_seq, **kargs):
-        nn.Module.__init__(self)
-        self.attn = MultiHeadSeqAttention(hidden_size=hidden_size, dropout=dropout, **kargs)
-        self.smoe1 = CustomizedMoEPositionwiseFF(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout)
-        self.smoe2 = CustomizedMoEPositionwiseFF(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout)
-        self.smoe3 = CustomizedMoEPositionwiseFF(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout)
-        self.ff1 = FeedForwardLayer(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout, **kargs)
-        self.ff2 = FeedForwardLayer(hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, dropout=dropout, **kargs)
-        self.norm1 = nn.LayerNorm(hidden_size)
-        self.norm2 = nn.LayerNorm(hidden_size)
-        self.norm3 = nn.LayerNorm(hidden_size)
-        self.norm4 = nn.LayerNorm(hidden_size)
-        self.norm5 = nn.LayerNorm(hidden_size)
-        self.norm6 = nn.LayerNorm(hidden_size)
-
-        self.use_attn = arch_seq[0] == 's'
-
-    def forward(self, h, h_cache, key_pe):
-        # h = B x M x H
-        # h_cache = B x L x H
-        # attn
-        h_all = torch.cat([h_cache, h], dim=1) # B x (M+L) x H
-        attn_out = self.attn(h, h_all, h_all, key_pe)
-        h = self.norm1(h + attn_out) # B x M x H
-        # smoe1
-        smoe_out = self.smoe1(h)
-        h = self.norm2(h + smoe_out) # B x M x H
-        # ff1
-        ff_out = self.ff1(h)
-        h = self.norm3(h + ff_out) # B x M x H
-        # smoe2
-        smoe_out = self.smoe2(h)
-        h = self.norm4(h + smoe_out) # B x M x H
-        # ff2
-        ff_out = self.ff2(h)
-        h = self.norm5(h + ff_out) # B x M x H
-        # smoe3
-        smoe_out = self.smoe3(h)
-        h = self.norm6(h + smoe_out) # B x M x H
-        return h
-
 class TransformerSeq(nn.Module):
     def __init__(self, vocab_size, hidden_size, inner_hidden_size, nb_heads, nb_layers, attn_span, architecture, base_arch, dropout, **kargs):
         nn.Module.__init__(self)
@@ -255,13 +213,7 @@ class TransformerSeq(nn.Module):
                 for i in range(nb_layers)
             )
         elif base_arch == "brainformer":
-            self.layers.extend(
-                BrainformerSeqLayer(
-                    hidden_size=hidden_size, inner_hidden_size=inner_hidden_size, arch_seq=arch[6*i:6*(i+1)], nb_heads=nb_heads, dropout=dropout, 
-                    attn_span=attn_span, **kargs
-                )
-                for i in range(nb_layers)
-            )
+            pass
         else:
             raise RuntimeError("wrong type of base architecture - must be 'transformer' or 'brainformer'")
 

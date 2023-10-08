@@ -3,8 +3,8 @@ mkdir -p checkpoints/enwik8/transformers-s
 args="
 --data datasets/pretraining/enwik8 \
 --base_arch transformer \
---architecture sgsgsgsg \
---nlayers 4 \
+--architecture sgsgsgsgsgsg \
+--nlayers 6 \
 --hid-sz 224 \
 --inner-hid-sz 224 \
 --nheads 8 \
@@ -16,7 +16,7 @@ args="
 --lr 0.0007 \
 --lr-warmup 3000 \
 --niter 1 \
---batch-sz 64 \
+--batch-sz 48 \
 --batch-split 2 \
 --nbatches 60000 \
 --checkpoint checkpoints/enwik8/transformers-s/smoe.pt \

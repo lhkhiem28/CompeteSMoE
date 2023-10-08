@@ -5,8 +5,8 @@ args="
 --base_arch transformer \
 --architecture sgsgsgsgsgsgsgsgsgsgsgsg \
 --nlayers 12 \
---hid-sz 672 \
---inner-hid-sz 672 \
+--hid-sz 504 \
+--inner-hid-sz 504 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
@@ -14,11 +14,11 @@ args="
 --load_balance 0.01 \
 --optim adam \
 --lr 0.0007 \
---lr-warmup 9000 \
+--lr-warmup 6000 \
 --niter 1 \
---batch-sz 64 \
+--batch-sz 48 \
 --batch-split 2 \
---nbatches 180000 \
+--nbatches 120000 \
 --checkpoint checkpoints/enwik8/transformers-l/smoe.pt \
 "
 
