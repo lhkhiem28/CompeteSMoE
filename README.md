@@ -24,7 +24,7 @@ datasets/
 
 |   | SMoE | SMoE-Dropout | XMoE | StableMoE |
 |---|---|---|---|---|
-| Transformer (S/M/L) | <input type="checkbox" disabled checked /> |  |  |  |
+| Transformer (S/M/L) | ✅ |  |  |  |
 | Brainformer (S/M/L) |  |  |  |  |
 
 - Run the corresponding script. For example, run the below command to pre-train the Transformer at a small scale with SMoE layers. </br>
