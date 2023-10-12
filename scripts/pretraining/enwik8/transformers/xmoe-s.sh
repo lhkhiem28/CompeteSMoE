@@ -1,13 +1,13 @@
-mkdir -p checkpoints/enwik8/transformers-m
+mkdir -p checkpoints/enwik8/transformers-s
 
 args="
 --data datasets/pretraining/enwik8 \
 --base_arch transformer \
---architecture sgsgsgsgsgsgsgsgsg \
---gate_name smoe \
---nlayers 9 \
---hid-sz 336 \
---inner-hid-sz 336 \
+--architecture sgsgsgsgsgsg \
+--gate_name xmoe \
+--nlayers 6 \
+--hid-sz 224 \
+--inner-hid-sz 224 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
@@ -15,12 +15,12 @@ args="
 --load_balance 0.01 \
 --optim adam \
 --lr 0.0007 \
---lr-warmup 4500 \
+--lr-warmup 3000 \
 --niter 1 \
 --batch-sz 48 \
 --batch-split 2 \
---nbatches 90000 \
---checkpoint checkpoints/enwik8/transformers-m/smoe.pt \
+--nbatches 60000 \
+--checkpoint checkpoints/enwik8/transformers-s/xmoe.pt \
 "
 
 echo "Training ..."

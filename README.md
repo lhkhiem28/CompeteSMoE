@@ -22,10 +22,10 @@ datasets/
 
 - Select the Transformer architecture, its scale, and the type of SMoE layer. We support:
 
-|   | SMoE | SMoE-Dropout | XMoE | StableMoE |
-|---|---|---|---|---|
-| Transformer (S/M/L) | ✅ |  |  |  |
-| Brainformer (S/M/L) |  |  |  |  |
+|   | SMoE | SMoE-Dropout | XMoE | StableMoE | CompeteSMoE |
+|---|---|---|---|---|---|
+| Transformer (S/M/L) | ✅ |  | ✅ |  |  |
+| Brainformer (S/M/L) |  |  |  |  |  |
 
 - Run the corresponding script. For example, run the below command to pre-train the Transformer at a small scale with SMoE layers. </br>
 `bash scripts/pretraining/enwik8/transformers/smoe-s.sh`

@@ -4,6 +4,7 @@ args="
 --data datasets/pretraining/enwik8 \
 --base_arch transformer \
 --architecture sgsgsgsgsgsgsgsgsgsgsgsg \
+--gate_name smoe \
 --nlayers 12 \
 --hid-sz 504 \
 --inner-hid-sz 504 \

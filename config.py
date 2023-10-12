@@ -94,6 +94,12 @@ PARAMS_CONFIG = {
             "help": "load_balance",
             "dest": "load_balance",
         },
+        "--gate_name": {
+            "type": str,
+            "default": "smoe",
+            "help": "gate_name",
+            "dest": "gate_name",
+        },
     },
     # optimization-specific
     'optim_params': {

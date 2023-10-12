@@ -4,7 +4,7 @@ args="
 --data datasets/pretraining/enwik8 \
 --base_arch transformer \
 --architecture sgsgsgsgsgsgsgsgsg \
---gate_name smoe \
+--gate_name xmoe \
 --nlayers 9 \
 --hid-sz 336 \
 --inner-hid-sz 336 \
@@ -20,7 +20,7 @@ args="
 --batch-sz 48 \
 --batch-split 2 \
 --nbatches 90000 \
---checkpoint checkpoints/enwik8/transformers-m/smoe.pt \
+--checkpoint checkpoints/enwik8/transformers-m/xmoe.pt \
 "
 
 echo "Training ..."
