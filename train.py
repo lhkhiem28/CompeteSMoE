@@ -1,7 +1,5 @@
 import os, sys
 import warnings; warnings.filterwarnings("ignore")
-import pytorch_lightning as pl
-pl.seed_everything(23)
 
 import argparse
 import math, random

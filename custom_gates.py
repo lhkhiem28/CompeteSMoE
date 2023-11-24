@@ -10,7 +10,6 @@ import numpy as np
 from fmoe.gates.base_gate import BaseGate
 
 __all__ = [
-    'CustomNaiveGate_Attn', 
     'CustomNaiveGate_Balance_SMoE', 
     'CustomNaiveGate_Balance_XMoE', 
 ]
