@@ -170,7 +170,7 @@ class TransformerSeqLayer(nn.Module):
     def __init__(self, hidden_size, inner_hidden_size, dropout, s, g, gate_name, **kargs):
         nn.Module.__init__(self)
         if gate_name in ["smoe", "smoe-dropout"]:
-            gate = CustomNaiveGate_Balance
+            gate = CustomNaiveGate_Balance_SMoE
         elif gate_name == "xmoe":
             gate = CustomNaiveGate_Balance_XMoE
         elif gate_name == "stablemoe":

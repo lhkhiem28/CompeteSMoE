@@ -10,7 +10,7 @@ Our implementation is based on the [Sandwich Transformer](https://github.com/ofi
 ## Running Experiments in the Paper
 
 #### Pre-training
-- Download the enwik8 dataset from [here](https://drive.google.com/drive/folders/1IFwCSf9JSeyviDGw5tyHmrdxyUiqsjFt?usp=drive_link), then put it into the directory `datasets/pretraining/`</br>
+- Download the enwik8 dataset from [here](https://drive.google.com/drive/folders/16xKcMUFmZoXHzQLeaOyYCM_wgY2avuzh?usp=drive_link), then put it into the directory `datasets/pretraining/`</br>
 ```bash
 datasets/
 └── pretraining
@@ -22,10 +22,10 @@ datasets/
 
 - Select the Transformer architecture, its scale, and the type of SMoE layer. We support:
 
-|   | SMoE | SMoE-Dropout | XMoE | StableMoE | CompeteSMoE |
-|---|---|---|---|---|---|
-| Transformer (S/M/L) | ✅ |  | ✅ |  |  |
-| Brainformer (S/M/L) |  |  |  |  |  |
+|                     | SMoE | SMoE-Dropout | XMoE | StableMoE | CompeteSMoE |
+|---------------------|------|--------------|------|-----------|-------------|
+| Transformer (S/M/L) | ✅   |              |      |           |             |
+| Brainformer (S/M/L) |      |              |      |           |             |
 
 - Run the corresponding script. For example, run the below command to pre-train the Transformer at a small scale with SMoE layers. </br>
 `bash scripts/pretraining/enwik8/transformers/smoe-s.sh`

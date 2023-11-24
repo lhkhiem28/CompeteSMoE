@@ -3,11 +3,11 @@ mkdir -p checkpoints/enwik8/transformers-m
 args="
 --data datasets/pretraining/enwik8 \
 --base_arch transformer \
---architecture sgsgsgsgsgsgsgsgsg \
+--architecture sgsgsgsgsgsgsgsg \
 --gate_name smoe \
---nlayers 9 \
---hid-sz 336 \
---inner-hid-sz 336 \
+--nlayers 8 \
+--hid-sz 320 \
+--inner-hid-sz 320 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
@@ -15,11 +15,11 @@ args="
 --load_balance 0.01 \
 --optim adam \
 --lr 0.0007 \
---lr-warmup 4500 \
+--lr-warmup 4000 \
 --niter 1 \
 --batch-sz 48 \
 --batch-split 2 \
---nbatches 90000 \
+--nbatches 80000 \
 --checkpoint checkpoints/enwik8/transformers-m/smoe.pt \
 "
 

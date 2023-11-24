@@ -25,7 +25,7 @@ def _train_step(model, load_balance, X, Y, h_cache, eval_only, loss_div=1):
         if load_balance > 0:
             balance_loss = 0
             for name, m in model.named_modules():
-                if isinstance(m, CustomNaiveGate_Balance):
+                if isinstance(m, CustomNaiveGate_Balance_SMoE) or isinstance(m, CustomNaiveGate_Balance_XMoE):
                     balance_loss += m.loss
             loss += load_balance * balance_loss
 
