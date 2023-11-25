@@ -6,8 +6,8 @@ args="
 --architecture sgsgsgsgsgsgsgsg \
 --gate_name smoe \
 --nlayers 8 \
---hid-sz 320 \
---inner-hid-sz 320 \
+--hid-sz 352 \
+--inner-hid-sz 352 \
 --nheads 8 \
 --block-sz 512 \
 --attn-span 2048 \
